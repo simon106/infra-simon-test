@@ -1,0 +1,39 @@
+#!/usr/bin/env groovy
+
+pipeline {
+  agent any
+
+  stages {
+
+    stage('Terraform Init') {
+      agent {
+        docker {
+          reuseNode true
+          image 'terraform-az'
+          args '-v /var/run/docker.sock'
+        }
+      }
+      steps {
+        sh (script:"cd env/pay && terraform planinit -input=false")
+      }
+    }
+    stage('Terraform Plan') withCredentials([azureServicePrincipal('credentials_id')]) {
+      agent {
+        docker {
+          reuseNode true
+          image 'terraform-az'
+          args '-v /var/run/docker.sock'
+        }
+      }
+      steps {
+          sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+          sh (script:"cd env/pay && terraform plan -input=false")
+      }
+    }
+  }
+  post { 
+    cleanup { 
+      deleteDir()
+    }
+  }
+}
