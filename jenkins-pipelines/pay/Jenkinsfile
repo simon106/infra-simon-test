@@ -19,7 +19,9 @@ pipeline {
       steps {
           withCredentials([azureServicePrincipal('SimonTestSPN')]) {
             sh '''az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'''
-            sh (script:"cd env/pay && terraform plan -input=false")
+            sh ''' cd env/pay
+            terraform apply -var "arm_subscription_id=$AZURE_SUBSCRIPTION_ID" -var "arm_sp_application_id=$AZURE_CLIENT_ID" -var "arm_sp_application_secret=$AZURE_CLIENT_SECRET" -var "arm_tenant_id=$AZURE_TENANT_ID"
+            '''
       }
      }
     }
