@@ -25,6 +25,15 @@ pipeline {
       }
      }
     }
+    stage('Terraform Apply') {
+      steps {
+          withCredentials([azureServicePrincipal('SimonTestSPN')]) {
+            sh ''' cd env/pay
+            terraform apply -input=false -auto-approve "tfplan" -no-color
+            '''
+      }
+     }
+    }    
   }
   post { 
     cleanup { 
