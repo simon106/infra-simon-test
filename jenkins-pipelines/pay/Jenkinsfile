@@ -14,7 +14,7 @@ pipeline {
         }
       }
       steps {
-        sh (script:"cd env/pay && terraform planinit -input=false")
+        sh (script:"cd env/pay && terraform init -input=false")
       }
     }
     stage('Terraform Plan') {
