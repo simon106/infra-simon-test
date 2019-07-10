@@ -3,3 +3,8 @@ resource "azurerm_resource_group" "rg" {
   location = "australiaeast"
 }
 
+resource "azurerm_resource_group" "rg" {
+  name     = "paul_daley_test"
+  location = "australiaeast"
+}
+
